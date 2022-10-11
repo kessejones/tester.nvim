@@ -1,7 +1,7 @@
 local php = require("tester.languages.php")
+local python = require("tester.languages.python")
 
-local M = {}
-
-M.php = php
-
-return M
+return {
+    php = php,
+    python = python,
+}

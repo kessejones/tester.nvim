@@ -1,4 +1,5 @@
 local ts = vim.treesitter
+local utils = require("tester.utils")
 
 local M = {}
 
@@ -16,14 +17,8 @@ local php_query = ts.parse_query(
     ]]
 )
 
-local function get_root(bufnr)
-    local parser = ts.get_parser(bufnr, "php", {})
-    local tree = parser:parse()[1]
-    return tree:root()
-end
-
 local function query_buffer(bufnr)
-    local root = get_root(bufnr)
+    local root = utils.treesitter_tree_root(bufnr, "php")
 
     local class_data = {}
     local methods_decl = {}

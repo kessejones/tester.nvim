@@ -6,6 +6,9 @@ return {
         pest = {
             command = { "./vendor/bin/pest" },
         },
+        pytest = {
+            command = { "pytest", "--color=no" },
+        },
     },
     mapping = {
         run_all = "<Leader>oa",
