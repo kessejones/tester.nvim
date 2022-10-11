@@ -1,31 +1,8 @@
-local Job = require("tester.lib.Job")
 local config = require("tester.config")
 local treesitter = require("tester.providers.phpunit.treesitter")
+local utils = require("tester.utils")
 
 local fmt = string.format
-
-local function exec(cmd, test, on_success, on_fail)
-    local output = {}
-    local job = Job.new(cmd, {
-        pty = true,
-        stdout_buffered = true,
-        on_stdout = function(_, data)
-            output = data
-        end,
-        on_exit = function(_, code, _)
-            if code == 0 then
-                if on_success then
-                    on_success(test, output)
-                end
-            else
-                if on_fail then
-                    on_fail(test, output)
-                end
-            end
-        end,
-    })
-    job:start()
-end
 
 local M = {}
 
@@ -66,11 +43,11 @@ function M:run(test)
 
     local phpunit_config = config.provider_config("phpunit")
 
-    local command = phpunit_config.command
+    local command = vim.deepcopy(phpunit_config.command)
     table.insert(command, "--filter")
     table.insert(command, query)
 
-    exec(command, test, self.on_success, self.on_fail)
+    utils.exec(command, test, self.on_success, self.on_fail)
 end
 
 return M

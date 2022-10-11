@@ -131,6 +131,7 @@ function Context:load_tests()
             end
 
             self._tests[name] = {
+                filename = case_data.filename,
                 method_name = name,
                 class_name = class_name,
                 status = TestStatus.NotExecuted,
