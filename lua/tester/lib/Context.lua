@@ -147,7 +147,7 @@ function Context:test_from_line(line)
     local tests = self.provider:get_tests()
 
     for _, test in pairs(tests) do
-        if line >= test.range[1] + 1 and line <= test.range[3] + 1 then
+        if line >= test.range[1] + 1 and line <= test.range[3] + 1 and test.hide == false then
             return test
         end
     end
