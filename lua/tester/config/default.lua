@@ -10,8 +10,4 @@ return {
             command = { "pytest", "--color=no" },
         },
     },
-    mapping = {
-        run_all = "<Leader>oa",
-        run_current = "<Leader>oo",
-    },
 }

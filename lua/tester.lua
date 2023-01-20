@@ -1,30 +1,26 @@
+local a = vim.api
+
 local config = require("tester.config")
 local languages = require("tester.languages")
 
+local contexts = {}
+
 local function attach(ctx)
-    local mapping = config.mapping()
+    table.insert(contexts, ctx.bufnr, ctx)
 
-    vim.keymap.set({ "n" }, mapping.run_current, function()
-        local cur_line = vim.fn.getpos(".")
-        ctx:run_from_line(cur_line[2])
-    end, { buffer = ctx.bufnr })
-
-    vim.keymap.set({ "n" }, mapping.run_all, function()
-        ctx:run_all()
-    end, { buffer = ctx.bufnr })
-
-    vim.api.nvim_create_autocmd({ "BufWritePost", "TextChangedI", "TextChanged" }, {
+    a.nvim_create_autocmd({ "BufWritePost", "TextChangedI", "TextChanged" }, {
         buffer = ctx.bufnr,
         callback = function()
             ctx:update(true)
         end,
     })
 
-    vim.api.nvim_create_autocmd("BufDelete", {
+    a.nvim_create_autocmd("BufDelete", {
         buffer = ctx.bufnr,
         group = "tester",
         callback = function()
             ctx:flush()
+            table.remove(contexts, ctx.bufnr)
         end,
     })
 
@@ -45,6 +41,23 @@ function M.setup(opts)
             group = group,
             on_attach = attach,
         })
+    end
+end
+
+function M.run_current_test()
+    local bufnr = a.nvim_get_current_buf()
+    local ctx = contexts[bufnr]
+    if ctx then
+        local cur_line = vim.fn.getpos(".")
+        ctx:run_from_line(cur_line[2])
+    end
+end
+
+function M.run_all_tests()
+    local bufnr = a.nvim_get_current_buf()
+    local ctx = contexts[bufnr]
+    if ctx then
+        ctx:run_all()
     end
 end
 
