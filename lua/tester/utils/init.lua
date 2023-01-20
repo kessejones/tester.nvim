@@ -31,4 +31,9 @@ function M.treesitter_tree_root(bufnr, lang)
     return tree:root()
 end
 
+function M.find_tester_file()
+    local matches = vim.fs.find(".tester.json")
+    return matches[1]
+end
+
 return M

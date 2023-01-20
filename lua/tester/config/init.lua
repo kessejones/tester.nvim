@@ -1,6 +1,5 @@
 local default = require("tester.config.default")
-local project = require("project_nvim.project")
-local path = require("lspconfig.util").path
+local utils = require("tester.utils")
 
 local M = {}
 local config = {}
@@ -18,18 +17,15 @@ function M.provider_config(provider)
 end
 
 function M.load_tester_file()
-    local root = project.find_pattern_root()
-    if not root then
-        return
-    end
+    local tester_file = utils.find_tester_file()
 
-    local filepath = path.join(root, ".tester.json")
-    if not path.exists(filepath) then
+    if not tester_file then
+        vim.notify("[tester.nvim] Could not find tester.json")
         return
     end
 
     local content = {}
-    for line in io.lines(filepath) do
+    for line in io.lines(tester_file) do
         table.insert(content, line)
     end
 
