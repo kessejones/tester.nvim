@@ -3,9 +3,10 @@ local utils = require("tester.utils")
 
 local M = {}
 
-local php_query = ts.parse_query(
-    "php",
-    [[
+local function get_php_query()
+    local parser = ts.parse_query(
+        "php",
+        [[
         (class_declaration
             name: (name) @class-name
             body: (declaration_list
@@ -15,7 +16,10 @@ local php_query = ts.parse_query(
             )
         )
     ]]
-)
+    )
+
+    return parser
+end
 
 local function query_buffer(bufnr)
     local root = utils.treesitter_tree_root(bufnr, "php")
@@ -24,6 +28,7 @@ local function query_buffer(bufnr)
     local methods_decl = {}
     local methods_body = {}
 
+    local php_query = get_php_query()
     for id, node in php_query:iter_captures(root, bufnr, 0, -1) do
         local name = php_query.captures[id]
         local range = { node:range() }
