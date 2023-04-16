@@ -3,8 +3,8 @@ local utils = require("tester.utils")
 
 local M = {}
 
-local function get_query_parsed()
-    local python_query = ts.parse_query(
+local function treesitter_query_parse()
+    local python_query = ts.query.parse(
         "python",
         [[
         ; Function
@@ -20,7 +20,7 @@ local function query_buffer(bufnr)
     local function_decl = {}
     local function_body = {}
 
-    local python_query = get_python_query()
+    local python_query = treesitter_query_parse()
     for id, node in python_query:iter_captures(root, bufnr, 0, -1) do
         local name = python_query.captures[id]
         local range = { node:range() }
